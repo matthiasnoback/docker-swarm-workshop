@@ -36,3 +36,8 @@ You can add this to `~/.bash_profile` too if you like, to make this variable ava
 ## VirtualBox
 
 Make sure you have [VirtualBox](https://www.virtualbox.org/) installed on your machine.
+
+TODO:
+
+- Remove extra functionality in index.php
+- Remove docker-compose.yml
