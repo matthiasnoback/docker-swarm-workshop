@@ -224,10 +224,10 @@ Finally, connect to a manager node (any node in our case), and run:
 ```bash
 docker stack deploy \
     --compose-file ./docker-compose.yml \
-    docker_swarm_workshop
+    workshop
 ```
 
-You can use `docker stack ls`, `ps`, etc. to find out more about the stack you just deployed. Also, all of the previously discussed commands can still be used, like `docker service ps`, etc. However, the names of the services are now being automatically prefixed by the name of the stack, e.g. `docker_swarm_workshop_[service_name]`.
+You can use `docker stack ls`, `ps`, etc. to find out more about the stack you just deployed. Also, all of the previously discussed commands can still be used, like `docker service ps`, etc. However, the names of the services are now being automatically prefixed by the name of the stack, e.g. `workshop_[service_name]`.
 
 ## Labels
 
@@ -239,26 +239,34 @@ Now, Redis requires data storage on the node where it's running. Not every node 
 docker node update --label-add data=persistent worker1
 ```
 
-Figure out using the [Compose file reference](https://docs.docker.com/compose/compose-file/#placement) how you can instruct the Swarm manager to place the `redis` service instance only on specific nodes. 
+Figure out using the [Compose file reference](https://docs.docker.com/compose/compose-file/#placement) how you can instruct the Swarm manager to place the `redis` service instance only on nodes with specific labels. 
 
 ```bash
 docker stack deploy \
     --compose-file ./docker-compose.yml \
-    docker_swarm_workshop
+    workshop
 ```
 
 Run:
 
 ```bash
-docker stack ps docker_swarm_workshop
+docker stack ps workshop
 ```
 
 Verify that `redis` is indeed running on `worker1`.
 
-> ### Bonus assignment
-> 
-> Set up a volume that can be used by Redis to store its data.
+> ### Tip: create a deploy script
+>
+> It may be smart to combine the commands you need to run to redeploy your stack and follow along with the status of the deployment process into a convenient script in `bin/`. Take a look at the scripts in that directory for some inspiration.
 
 ## Secrets
 
-TODO Maybe connect to Redis using a password shared as a secret?
+It would be 
+
+## Networks
+
+
+
+## Bonus assignment
+ 
+Set up a volume that can be used by Redis to store its data (so that it can be backed up by a fictitious cron job running on `worker1`).
