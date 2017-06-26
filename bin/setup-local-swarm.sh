@@ -8,7 +8,7 @@ docker-machine create -d virtualbox manager1
 docker-machine create -d virtualbox worker1
 docker-machine create -d virtualbox worker2
 
-# Let the Docker client to `machine1`
+# Let the Docker client talk to `manager1`
 eval $(docker-machine env manager1)
 
 # Initialize the Swarm with `manager1`'s IP as the advertised address
