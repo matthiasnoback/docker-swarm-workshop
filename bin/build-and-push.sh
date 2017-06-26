@@ -1,6 +1,8 @@
-#!/usr/bin/env bash -eux
+#!/usr/bin/env bash
 
 export PS4="\[\e[33m\]Running:\[\e[m\] "
+
+set -eux
 
 eval $(docker-machine env -u)
 
