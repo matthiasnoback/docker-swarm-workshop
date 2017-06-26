@@ -1,6 +1,8 @@
-#!/usr/bin/env bash -uex
+#!/usr/bin/env bash
 
 export PS4="\[\e[33m\]Running:\[\e[m\] "
+
+set -eux
 
 docker-machine create -d virtualbox manager1
 docker-machine create -d virtualbox worker1
