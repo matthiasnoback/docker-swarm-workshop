@@ -63,7 +63,7 @@ docker service ps backend
 Finally, change focus to the node that's actually running the service now, for example if the service runs on `manager1`, then run:
 
 ```bash
-eval $(docker-machine) manager1
+eval $(docker-machine env manager1)
 ```
 
 Now you can use regular `docker` commands like `docker ps` to figure out which containers are running on this node. This allows you to retrieve any other information you're usually interested in when it comes to running containers, for example the ports they are listening on. Run:
