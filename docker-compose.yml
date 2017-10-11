@@ -1,0 +1,56 @@
+version: '3.1'
+
+services:
+    backend:
+        image: "${DOCKER_HUB_USERNAME}/docker-swarm-workshop-backend:latest"
+        ports:
+            - "80:80"
+        deploy:
+            mode: replicated
+            replicas: 3
+            update_config:
+                parallelism: 1
+                delay: 5s
+        secrets:
+            - db_password
+
+    redis:
+        image: ${DOCKER_HUB_USERNAME}/docker-swarm-workshop-redis:latest
+        deploy:
+            mode: replicated
+            replicas: 1
+        environment:
+            REDIS_PASSWORD_FILE: /run/secrets/db_password
+        secrets:
+            - db_password
+
+    cadvisor:
+        image: google/cadvisor
+        hostname: '{{.Node.ID}}'
+        command: -logtostderr -docker_only
+        volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:rw
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+        deploy:
+            mode: global
+            placement:
+                constraints:
+                    - node.hostname == worker1
+        ports:
+            # Don't expose cadvisor in a production environment!
+            - 8080:8080
+
+    utility:
+        image: alpine
+        # Force the container to keep running for a long time
+        command: sleep 10000000
+        secrets:
+            - db_password
+        deploy:
+            mode: global
+
+secrets:
+    db_password:
+        file: ./db_password.txt

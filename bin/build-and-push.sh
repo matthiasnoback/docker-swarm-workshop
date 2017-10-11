@@ -14,3 +14,12 @@ docker build \
     backend/
 
 docker push ${BACKEND_SERVICE_TAG}
+
+REDIS_SERVICE_TAG="${DOCKER_HUB_USERNAME}/docker-swarm-workshop-redis:latest"
+
+docker build \
+    -t "${REDIS_SERVICE_TAG}" \
+    -f redis/Dockerfile \
+    redis/
+
+docker push ${REDIS_SERVICE_TAG}
