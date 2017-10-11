@@ -422,29 +422,24 @@ service:
         command: redis-server --requirepass koekje
 ```
 
-However, you want the password to be read from the `db_password` file instead of hard-coding it. It took me some time to [figure it out](https://php-and-symfony.matthiasnoback.nl/2017/06/making-a-docker-image-ready-for-swarm-secrets/) but this is a pretty clean way to do it:
+However, you want the password to be read from the `db_password` file instead of hard-coding it. I find the best way to do this is to extend the existing `redis:alpine` image and add our own [entrypoint script](../redis/override_entrypoint.sh). This script still makes use of the [original entrypoint script](https://github.com/docker-library/redis/blob/master/3.2/alpine/docker-entrypoint.sh), but it also allows you to set the password using Docker Secrets.
 
-```yaml
-service:
-    redis:
-        # ...
-        command:
-            - "sh"
-            - "-c" 
-            - "redis-server --requirepass \"$$(cat /run/secrets/db_password)\""
-```
+Here's a list of things you need to do:
 
-Don't forget to actually make the secret available to the `redis` service (you already did the same thing for the `utility` service).
+- You need to build and push your own Redis image using the provided `Dockerfile` in `redis/` (you could simply add this extra build step to `bin/build-and-push.sh`).
+- You need to set the `REDIS_PASSWORD_FILE` environment variable in `docker-compose.yml`, pointing the entrypoint script to the right location to read the password from.
+- You need to replace the image tag in `docker-compose.yml` (instead of `redis:alpine`, use your own image).
+- You need to expose the `db_password` secret to your `redis` service. 
 
-After making these changes to your `docker-compose.yml` file, redeploy again.
+After making these changes to your `docker-compose.yml` file, build, push and redeploy.
 
-Visiting the backend service in the browser should show you an authentication error. After all, you've set the password on the server, but you don't use it in the client yet. To do so, add the following line, directly after the line that connects to Redis:
+Visiting the backend service in the browser should then show you an authentication error. After all, you've set the password on the server, but you don't use it in the client yet. To do so, add the following line, directly after the line that connects to Redis:
 
 ```php
 $redis->auth(file_get_contents('/run/secrets/db_password'));
 ```
 
-You should also make the `db_password` available to the `backend` service for this work.
+Of course, you should also make the `db_password` available to the `backend` service for this work.
 
 Now you will have to rebuild the service image and redeploy the stack. After some time, everything should be okay and the visits counter should be working again.
 
