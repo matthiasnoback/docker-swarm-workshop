@@ -380,7 +380,7 @@ docker secret create [name_of_secret] [contents_of_secret]
 If you do it manually, add the following to your [`docker-compose.yml` file](https://docs.docker.com/compose/compose-file/#secrets):
 
 ```yaml
-secets:
+secrets:
     name_of_secret:
         external: true
 ```
@@ -389,7 +389,7 @@ You can also put a secret in a file and load it in `docker-compose.yml` as follo
  
 
 ```yaml
-secets:
+secrets:
     name_of_secret:
         file: [path to file]
 ```
